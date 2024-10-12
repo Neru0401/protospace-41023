@@ -1,6 +1,8 @@
 class PrototypesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show] 
   before_action :move_to_index, except: [:index, :show]
+  before_action :check_user_ownership, only: [:edit, :update, :destroy]
+
   def index
     @prototypes = Prototype.all
   end
@@ -56,6 +58,7 @@ class PrototypesController < ApplicationController
   end
 
   def check_user_ownership
+    @prototype = Prototype.find(params[:id])
     unless current_user == @prototype.user
       redirect_to root_path
     end
